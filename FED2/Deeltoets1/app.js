@@ -5,6 +5,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
 // Self invoking function, creert een lokale scope
 (function () {
 // Data objecten
+//object schedule in de namespace
     FRISBEEAPP.schedule = {
         items: [ 
         { date: "Monday, 9:00am", team1: "Chasing", team1Score: "13", team2: "Amsterdam Money Gang", team2Score: "9"},
@@ -19,7 +20,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
         { date: "Monday, 1:00pm", team1: "Burning Snow", team1Score: "15", team2: "Amsterdam Money Gang", team2Score: "11"}
         ]
     };
-
+//object game in de namespace
     FRISBEEAPP.game = {
         items: [
         { score: "1", team1: "Boomsquad", team1Score: "1", team2: "Burning Snow", team2Score: "0"},
@@ -47,7 +48,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
         { score: "23", team1: "Boomsquad", team1Score: "15", team2: "Burning Snow", team2Score: "8"}
         ]
     };
-
+//object ranking in de namespace
     FRISBEEAPP.ranking = {
         items: [
         { team: "Chasing", Win: "2", Lost: "2", Sw: "7", Sl: "9", Pw: "35", Pl: "39"},
@@ -98,7 +99,9 @@ var FRISBEEAPP = FRISBEEAPP || {};
                 for (var i=0; i < sections.length; i++){
                     sections[i].classList.remove('active');
                 }
+                //voeg de actieve sectie toe
                 section.classList.add('active');
+
             }
 
             // Default route
