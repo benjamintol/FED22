@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<title>Tournament: Amsterdam Ultimate Autumn</title>
+	<link href="css/style.css" rel="stylesheet" type="text/css" />
+	<link href="css/bootoe.min.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+	<header class="navbar navbar-default">
+	        <section class="navbar-header">
+	          <a class="navbar-brand" href="#">Tournament: Amsterdam Ultimate Autumn</a>
+	        </section>
+	        <nav class="navbar-collapse navbar-right">
+		        <ul class="nav navbar-nav">
+				<li><a href="#/schedule">Schedule</a></li>
+				<li><a href="#/ranking">ranking</a></li>
+				</ul>
+	        </nav>
+    </header>
+
+	<div id="overlay"><img src="images/loader.gif" alt="Loader">
+</div>
+	<!-- Hier binnen komt alle content-->
+	<article id="content" class="col">
+		<!--ranking-->
+		<section id="gestureRanking" data-route="ranking">
+			<!--Het object dat binnen is gehaald door de api wordt in deze sectie aangesproken-->
+
+				<header> 
+					<!--Omdat in de data alleen een "letter" staat heb ik een span gebruikt, dit zodat ik ook "Poule" ervoor kan zetten-->
+					<h1>Ranking pool <span data-bind="name"></span></h1>
+				</header>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<td>Team</td>
+							<td>W</td>
+							<td>L</td>
+							<td>GS</td>
+							<td>GA</td>
+							<td>+/-</td>
+						</tr>
+					</thead>
+					<tbody data-bind="standings">
+						<tr>
+							<td data-bind="team"><span data-bind="name"></span></td>
+							<td data-bind="wins"></td>
+							<td data-bind="losses"></td>
+							<td data-bind="points_scored"></td>
+							<td data-bind="points_allowed"></td>
+							<td data-bind="plus_minus"></td>
+						</tr>	
+					</tbody>
+				</table>
+		</section>
+		<!--EINDE ranking-->
+		<!-- Schedule -->
+		<section id="gestureSchedule"data-route="schedule">
+			<section>
+				<header> 
+					<!--Omdat in de data alleen een "letter" staat heb ik een span gebruikt, dit zodat ik ook "Poule" ervoor kan zetten-->
+					<h1>Schedule poule A</h1>
+				</header>
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<td>Date</td>
+							<td>Team</td>
+							<td>Result</td>
+							<td>Team</td>
+							<td>Update</td>
+						</tr>
+					</thead>
+					<tbody data-bind="objects">
+						<tr>
+							<td data-bind="date"></td>
+							<td data-bind="team_1"><span data-bind="name"></span></td>
+							<td><span data-bind="team_1_score"></span> - <span data-bind="team_2_score"></span></td>
+							<td data-bind="team_2"><span data-bind="name"></span></td>
+							<td><a data-bind="gameID">Update</a></td>
+						</tr>	
+					</tbody>
+				</table>
+			</section>
+		</section>
+			<!-- EINDE Schedule -->
+				<!-- Schedule -->
+		<section id="gestureGame"data-route="game">
+			<section>
+				<header> 
+					<!--Omdat in de data alleen een "letter" staat heb ik een span gebruikt, dit zodat ik ook "Poule" ervoor kan zetten-->
+					<h1>Game</h1>
+				</header>
+
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>Team</th>
+							<th></th>
+							<th>Score</th>
+							<th></th>
+							<th>Team</th>
+							<th><b>Is Final</b></th>
+						</tr>
+					</thead>
+					<tbody>
+
+						<tr>
+							<td data-bind="team_1"><span data-bind="name"></span></td>
+							<td>
+								<select id="team1Score" data-bind="team_1_score">
+									<option value="0">0</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+								</select>
+							</td>
+							<td><span data-bind="team_1_score"></span> - <span data-bind="team_2_score"></span></td>
+							<td>
+								<select id="team2Score" data-bind="team_2_score">
+									<option value="0">0</option>
+									<option value="1">1</option>
+									<option value="2">2</option>
+									<option value="3">3</option>
+									<option value="4">4</option>
+									<option value="5">5</option>
+									<option value="6">6</option>
+									<option value="7">7</option>
+									<option value="8">8</option>
+									<option value="9">9</option>
+									<option value="10">10</option>
+									<option value="11">11</option>
+									<option value="12">12</option>
+									<option value="13">13</option>
+									<option value="14">14</option>
+									<option value="15">15</option>
+								</select>
+							</td>
+							<td data-bind="team_2"><span data-bind="name"></span></td>
+							<td><input id="isFinal" type="checkbox" name="isFinal" value="True"></td>
+							<td><a id="update" class="btn btn-default" href="#" >Update</a> </td>
+						</tr>
+					</tbody>
+				</table>
+			</section>
+		</section>
+			<!-- EINDE game -->
+	</article>
+	<!-- RANKING (OEFENING STATISCHE DATA)-->
+	
+	<!-- class = hide heeft te maken met het showen en verbergen van deze div
+			id = status om html aan te roepen in javascript -->
+	<div class="hide" id="status"></div>
+	<!-- Libs -->
+	<script src="lib/routie.min.js"></script>
+	<script src="lib/ready.min.js" type="text/javascript"></script>
+	<script src="lib/qwery.min.js" type="text/javascript"></script>
+	<script src="lib/transparancy.min.js" type="text/javascript"></script>
+	<script src="lib/promise.min.js" type="text/javascript"></script>
+	<script src="lib/hammer.min.js" type="text/javascript"></script>
+
+	<!-- Application -->
+	<script src="app.js"></script>
+
+</body>
+</html>
