@@ -6,7 +6,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
 // Self invoking function, creert een lokale scope
 (function () {
 
-        // Zorgt ervoor dat je script in EMASCRIPT 5 draait
+        // Zorgt ervoor dat je script in EMASCRIPT 5 draait hierdoor kun je nieuwere functies 
         "use strict";
 
         //Settings, zijn er zodat de links makkelijk te bereiken zijn
@@ -42,6 +42,9 @@ var FRISBEEAPP = FRISBEEAPP || {};
 
                     '/game/:id': function(id){
                         FRISBEEAPP.page.game(id);
+                    },
+                    '*': function(){
+                        FRISBEEAPP.page.schedule();
                     }
                 });
             },
@@ -49,6 +52,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
             change: function (page) {
 
                 //Roep de lader aan
+                console.log("Activeer loader");
                 FRISBEEAPP.loader.show();
                 // var route = sectie naam
                 var route = page;
@@ -77,16 +81,15 @@ var FRISBEEAPP = FRISBEEAPP || {};
         FRISBEEAPP.page = {
             //Game methode
             game: function (id) {
+                //weeggegeven dat de game page wordt gerenderd 
                 console.log("3. RENDER GAME PAGE", id);
 
-                // Pak id uit URL balk
+                // Pak id uit URL balk vanaf hash
                 var getID = window.location.hash.slice(6);
                 // Log game ID
                 console.log(getID);
-
-                //laat loader zien
                 
-                // Gebruik standaard request link en vul die aan met specifiek game ID
+                // Update game -> Gebruik standaard request link en vul die aan met specifiek game ID
                 promise.get(FRISBEEAPP.settings.gameURL + getID + "/" ).then(function(error, text, xhr){
                     if (error) {
                         alert('Error ' + xhr.status);
@@ -100,52 +103,22 @@ var FRISBEEAPP = FRISBEEAPP || {};
                     //Zoek in html naar data-route:game en zet de FRISBEE.game data op de eerste "data-route" die je kan vinden.
                     Transparency.render(qwery('[data-route=game')[0], FRISBEEAPP.game);
 
+                    FRISBEEAPP.router.change("game");
+
                     //hide de loader
+                    console.log("verwijder loader");
                     FRISBEEAPP.loader.hide();
+                });
 
-
-                    //
-            });
-
-            // Zit niet in de wachtrij van Asynchrone functie
-
-            // Pak een html element d.m.v. native javascript functie
-            var e = document.getElementById('update');
-            e.onclick = postData;
-
-            function postData() {
-                console.log('4. DATA WORDT GEPOST')
-
-                //hide de loader
-                FRISBEEAPP.loader.show();
-                
-                // var d = document.getElementById("loader");
-                // d.classList.remove('loaded');
-
-                var postID = window.location.hash.slice(7);
-                // Haal team 1 score uit de html
-                var el = document.getElementById("team1Score");
-                // Pak het geselecteerde element in het dropdown menu
-                // Leaguevine API wilt alleen strings terug dus pak .text
-                var team1Score = el.options[el.selectedIndex].text;
-                // Haal team 2 score uit de html
-                var k = document.getElementById("team2Score");
-                // Pak het geselecteerde element in het dropdown menu
-                // Leaguevine API wilt alleen strings terug dus pak .text
-                var team2Score = k.options[k.selectedIndex].text;
-
-                // Zoek een element met het ID isFinal
-                var checkBox = document.getElementById('isFinal');
-                // Maak nieuwe variabele aan met de waarde False
-                var eindScore = "False";
-
-                // Als checkbox is checked 
-                // .checked is native javascript functie
-                if(checkBox.checked)
-                {
-                    //dan is eindScore 'true'
-                    eindScore = "True";
+                // Pak een html element ('update') d.m.v. native javascript functie
+                var e = document.getElementById('update');
+                e.onclick = function(){
+                    FRISBEEAPP.eventlistener.gameupdatelistener();
                 }
+            },
+
+            postData: function(postID, team1Score, team2Score, eindScore) {
+                console.log('5. DATA WORDT GEPOST')
 
                 // Geef waardes mee aan variabele om te posten
                 var type        =  'POST',
@@ -168,16 +141,19 @@ var FRISBEEAPP = FRISBEEAPP || {};
                 xhr.setRequestHeader('Content-type','application/json');
                 xhr.setRequestHeader('Authorization','bearer 82996312dc');
 
-
+                // XHR state veranderingen
                 xhr.onreadystatechange = function() {
-                   
+                // als de xhr status ==4 oftewel succes
                   if (xhr.readyState==4 ){
+                    console.log("6. DATA GEPOST");
+                    // Pak het element met de ID "status"
                    var statusdiv = document.getElementById("status");
                    console.log(statusdiv);
-                        statusdiv.innerHTML = "Score upated!";
-                        // Div heeft een class "Hide"
-                        // Verwijder class "hide" -> Element wordt zichtbaar
-                        statusdiv.className = "";
+                    // voeg een string/tekst toe aan de var-> statusdiv
+                    statusdiv.innerHTML = "Score upated!";
+                    // Div heeft een class "Hide"
+                    // Verwijder class "hide" -> Element wordt zichtbaar
+                    statusdiv.className = "";
 
                         // Update score met zelfde variabelen als die je meegeeft
                         // met de post.
@@ -188,18 +164,15 @@ var FRISBEEAPP = FRISBEEAPP || {};
                         };
 
                         Transparency.render(qwery('[data-route=game')[0], scoreData);
-
                     //hide de loader
+                    console.log("verwijder loader");
                     FRISBEEAPP.loader.hide();
-
+                    // Voeg een timeout toe en na deze timeout zet je de statusdiv class weer op hide.
                     setTimeout(function(){
                         statusdiv.className = "hide";
                     },8000);
 
-                    //alert the user that a response now exists in the responseTest property.
-                   console.log(xhr.responseText);
-                   // And to view in firebug
-                   console.log('xhr', xhr);
+                    // als dit niet lukt of het geval is
                   } else {  
  
                     }  
@@ -210,15 +183,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
                 // // Maak de sectie waarop geklikt is actief
                 //   d.className =  "loaded"
                 return false;
-            }
-
-                // Gesture game
-                    var element = document.getElementById('gestureGame');
-                    var hammertime = Hammer(element).on("swipeleft", function(event) {
-                        routie('/schedule')
-                    });
-
-                FRISBEEAPP.router.change('game');
+                 
             },
 
             //methode
@@ -242,6 +207,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
                     Transparency.render(qwery('[data-route=ranking')[0], FRISBEEAPP.ranking); 
                     console.log("3.2 RANKING RENDER DONE") 
                     //hide de loader
+                    console.log("verwijder loader");
                     FRISBEEAPP.loader.hide();
             });
 
@@ -256,9 +222,6 @@ var FRISBEEAPP = FRISBEEAPP || {};
                     var hammertime = Hammer(element).on("swiperight", function(event) {
                         routie('/schedule')
                     });
-
-
-
             },
 
             //methode
@@ -294,9 +257,13 @@ var FRISBEEAPP = FRISBEEAPP || {};
 
                         date: {
                             text: function(params){
+                                // verkrijg starttijd van JSON object
                                 var startTime = new Date(this.start_time);
+                                // Verkrijg de dag van de gespeelde game
                                 var day = startTime.getDate();
+                                //Verkrijg de maand van de gespeelde game +1 (anders een maand te vroeg)
                                 var month = startTime.getMonth() + 1;
+                                // Verkrijg het jaar van de gespeelde game
                                 var year = startTime.getFullYear();
 
                                 var date = day + "/" + month + "/" + year;
@@ -310,10 +277,9 @@ var FRISBEEAPP = FRISBEEAPP || {};
                     console.log("3.2 SCHEDULE RENDER DONE")
 
                     //hide de loader
+                    console.log("verwijder loader");
                     FRISBEEAPP.loader.hide();
                 });  
-                    //Er wordt een classname toegevoegd aan de loader, deze wordt in de css verborgen
-                    // loader.className = "stoploader"; 
 
                     FRISBEEAPP.router.change('schedule');
 
@@ -327,6 +293,60 @@ var FRISBEEAPP = FRISBEEAPP || {};
 
         };
 
+        FRISBEEAPP.eventlistener = {
+            gameupdatelistener: function(){
+                console.log('4. DATA WORDT GEPOST')
+
+                //hide de loader
+                console.log("Activeer loader");
+                FRISBEEAPP.loader.show();
+                
+                // Pak de Id uit de url
+                var postID = window.location.hash.slice(7);
+                // Haal team 1 score uit de html
+                var el = document.getElementById("team1Score");
+                // Pak het geselecteerde element in het dropdown menu
+                // Leaguevine API wilt alleen strings terug dus pak .text
+                var team1Score = el.options[el.selectedIndex].text;
+                // Haal team 2 score uit de html
+                var k = document.getElementById("team2Score");
+                // Pak het geselecteerde element in het dropdown menu
+                // Leaguevine API wilt alleen strings terug dus pak .text
+                var team2Score = k.options[k.selectedIndex].text;
+
+                // Zoek een element met het ID isFinal
+                var checkBox = document.getElementById('isFinal');
+                // Maak nieuwe variabele aan met de waarde False
+                var eindScore = "False";
+                // Als checkbox is checked 
+                // .checked is native javascript functie
+                if(checkBox.checked){
+                    //dan is eindScore 'true'
+                    eindScore = "True";
+                }
+
+                FRISBEEAPP.page.postData(postID, team1Score, team2Score, eindScore);
+
+            }
+
+        };
+
+        //Het loader object met twee methodes
+        FRISBEEAPP.loader = {
+            show: function() {
+                //Pak het element met de ID "overlay" en verwijder de className "loaded". (deze staat op display none in de css)       
+                var x = document.getElementById('overlay')
+                x.classList.remove('loaded');
+            }, 
+
+           hide: function() {
+                //Pak het element met de ID "overlay" en voeg de className "loaded" toe. (deze staat op display none in de css)                  
+                var x = document.getElementById('overlay')
+                x.className = "loaded";
+           }
+        };
+
+
         //Een nog leeg object ranking.
         FRISBEEAPP.ranking = {
         };
@@ -334,19 +354,7 @@ var FRISBEEAPP = FRISBEEAPP || {};
         FRISBEEAPP.schedule = {
         };
 
-        //Het loader object met twee methodes
-        FRISBEEAPP.loader = {
-            show: function() {
-                // geef wat style elementen mee om de loader te showen        
-                document.getElementById('overlay').style.opacity=0.65;
-                document.getElementById('overlay').style.zIndex=1;
-            }, 
-
-           hide: function() {
-                // geef wat style elementen mee om de loader te showen                   
-                document.getElementById('overlay').style.opacity=0;
-                document.getElementById('overlay').style.zIndex=-1;
-           }
+        FRISBEEAPP.game = {
         };
 
 

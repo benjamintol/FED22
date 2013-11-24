@@ -19,10 +19,12 @@
 	        </nav>
     </header>
 
-	<div id="overlay"><img src="images/loader.gif" alt="Loader">
-</div>
+
 	<!-- Hier binnen komt alle content-->
 	<article id="content" class="col">
+		<div id="overlay" class"">
+		<img src="images/loader.gif" HEIGHT="40" WIDTH="40" alt="Loader">
+		</div>
 		<!--ranking-->
 		<section id="gestureRanking" data-route="ranking">
 			<!--Het object dat binnen is gehaald door de api wordt in deze sectie aangesproken-->
@@ -151,7 +153,7 @@
 							</td>
 							<td data-bind="team_2"><span data-bind="name"></span></td>
 							<td><input id="isFinal" type="checkbox" name="isFinal" value="True"></td>
-							<td><a id="update" class="btn btn-default" href="#" >Update</a> </td>
+							<td><button id="update" type="button" class="btn btn-default" href="#" >Update</button> </td>
 						</tr>
 					</tbody>
 				</table>

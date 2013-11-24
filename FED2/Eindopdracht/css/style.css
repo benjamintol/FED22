@@ -4,11 +4,16 @@
 }
 
 #overlay{
+	opacity: 0.65;
+	width: 80px%;
+	bottom:0;
+	float:right;
+	margin-right: 30px;
 
-	position: fixed;
-	width: 100px;
-	height: 100px;
-	margin:0 auto;
+}
+
+.loaded{
+	display:none;
 }
 
 /* Content section */
